@@ -1,6 +1,6 @@
 <?php
 
-$baseUrl = \CakeCaptcha\Config\FrameworkInformation::GetBaseUrl();
+$baseUrl = \CakeCaptcha\CakePHPInformation::GetBaseUrl();
 
 $LBD_Resource_Url = $baseUrl . 'captcha_resource/get/';
 

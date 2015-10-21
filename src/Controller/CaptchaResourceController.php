@@ -5,9 +5,13 @@ use CakeCaptcha\Helpers\CaptchaResourceHelper;
 
 class CaptchaResourceController extends Controller {
 
-	public function GetResource($p_FileName) {
-		$this->autoRender = false;
-		$resource = CaptchaResourceHelper::GetResource($p_FileName);
-		return $resource;
-	}
+    /**
+     * Get the contents of BotDetect Library resource file.
+     * 
+     * @param string  $p_FileName
+     */
+    public function GetResource($p_FileName) {
+        $this->autoRender = false;
+        return CaptchaResourceHelper::GetResource($p_FileName);
+    }
 }
