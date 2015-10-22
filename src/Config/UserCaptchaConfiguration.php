@@ -178,8 +178,7 @@ class UserCaptchaConfiguration {
      */
     private function NormalizePath($p_Path) {
         // physical path of the CakePHP's Config folder
-        $configPath = CakePHPInformation::GetConfigPath();
-        $pathInConfig = $configPath . '/' . $p_Path;
+        $pathInConfig = CakePHPInformation::GetConfigPath() . '/' . $p_Path;
 
         if (is_file($pathInConfig)) {
             return $pathInConfig;
@@ -187,8 +186,7 @@ class UserCaptchaConfiguration {
 
         // physical path of the CakePHP's Controllers folder
         // (only use for this package that has version number <= 3.1.0)
-        $controllersPath = CakePHPInformation::GetControllersPath();
-        $pathInControllers = $controllersPath . '/' . $p_Path;
+        $pathInControllers = CakePHPInformation::GetControllersPath() . '/' . $p_Path;
 
         if (is_file($pathInControllers)) {
             return $pathInControllers;
