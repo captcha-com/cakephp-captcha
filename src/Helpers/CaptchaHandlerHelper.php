@@ -1,5 +1,7 @@
 <?php namespace CakeCaptcha\Helpers;
 
+use CakeCaptcha\Helpers\HttpHelper;
+
 class CaptchaHandlerHelper {
 
     /**
@@ -14,11 +16,11 @@ class CaptchaHandlerHelper {
      */
     public function __construct() {
         $captchaId = $this->GetUrlParameter('c');
-        if (!is_null($captchaId) && preg_match("/^(\w+)$/ui", $captchaId)) {
+        if (!is_null($captchaId) && preg_match('/^(\w+)$/ui', $captchaId)) {
             $captchaConfig = array('CaptchaId' => $captchaId);
             $this->Captcha = new BotDetectCaptchaHelper($captchaConfig);
         } else {
-            $this->BadRequest('command');
+            HttpHelper::BadRequest('command');
         }
     }
 
@@ -28,7 +30,7 @@ class CaptchaHandlerHelper {
     public function GetCaptchaResponse() {
 
         if (is_null($this->Captcha)) {
-            $this->BadRequest('captcha');
+            HttpHelper::BadRequest('captcha');
         }
 
         $commandString = $this->GetUrlParameter('get');
@@ -183,7 +185,7 @@ class CaptchaHandlerHelper {
             // jQuery validation support, the input key may be just about anything,
             // so we have to loop through fields and take the first unrecognized one
             $recognized = array('get', 'c', 't', 'd');
-            foreach($_GET as $key => $value) {
+            foreach ($_GET as $key => $value) {
                 if (!in_array($key, $recognized)) {
                     $input = $value;
                     break;
@@ -205,24 +207,11 @@ class CaptchaHandlerHelper {
     }
 
     /**
-     * @param  string $p_Param
+     * @param  string  $p_Param
      * @return string|null
      */
     private function GetUrlParameter($p_Param) {
         return filter_input(INPUT_GET, $p_Param);
-    }
-	
-    /**
-     * Throw a bad request.
-     *
-     * @return void
-     */
-    private function BadRequest($p_Message) {
-        while (ob_get_contents()) { ob_end_clean(); }
-        header('HTTP/1.1 400 Bad Request');
-        header('Content-Type: text/plain');
-        echo $p_Message;
-        exit;
     }
 
 }
