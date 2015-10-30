@@ -23,7 +23,7 @@ class CaptchaResourceController extends Controller {
         // allow caching
         HttpHelper::AllowCache();
         
-         // captcha resource file information
+        // captcha resource file information
      	$fileInfo = pathinfo($resourcePath);
         $fileLength = filesize($resourcePath);
         $mimeType = self::GetMimeType($fileInfo['extension']);
