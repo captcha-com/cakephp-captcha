@@ -48,5 +48,5 @@ class BotDetectCaptcha {
 // static field initialization
 BotDetectCaptcha::$ProductInfo = [
     'name' => 'BotDetect PHP Captcha integration for the CakePHP framework', 
-    'version' => '3.2.0'
+    'version' => '3.2.1'
 ];
