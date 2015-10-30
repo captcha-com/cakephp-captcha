@@ -1,5 +1,6 @@
 <?php namespace CakeCaptcha\Helpers;
 
+use CakeCaptcha\Config\Path;
 use CakeCaptcha\Config\UserCaptchaConfiguration;
 
 final class LibraryLoaderHelper {
@@ -17,7 +18,7 @@ final class LibraryLoaderHelper {
      */
     public static function Load($p_Config = array()) {
         // load bd php library
-        self::IncludeFile(__DIR__ . '/../../../captcha/lib/botdetect.php');
+        self::IncludeFile(Path::GetBotDetectFilePathInLibrary());
 
         // user's captcha config file
         $userConfig = new UserCaptchaConfiguration();
@@ -28,7 +29,7 @@ final class LibraryLoaderHelper {
         }
 
         // load the captcha configuration defaults
-        self::IncludeFile(__DIR__ . '/../Config/CaptchaConfigDefaults.php');
+        self::IncludeFile(Path::GetCaptchaConfigDefaultsFilePath());
 
         // load user's captcha configuration
         $userCaptchaConfigFilePath = $userConfig->GetPhysicalPath();
