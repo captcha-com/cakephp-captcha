@@ -19,8 +19,9 @@
 
 * [Plain PHP Captcha](https://captcha.com/doc/php/php-captcha-quickstart.html)
 * [BotDetect PHP WordPress Captcha plugin](https://captcha.com/doc/php/wordpress-captcha.html)
-* [BotDetect PHP Captcha integration for the Laravel framework](https://captcha.com/doc/php/laravel-captcha-quickstart.html)
 * [BotDetect PHP Captcha integration for the CodeIgniter framework](https://captcha.com/doc/php/codeigniter-captcha-quickstart.html)
+* [BotDetect PHP Captcha integration for the Laravel framework](https://captcha.com/doc/php/laravel-captcha-quickstart.html)
+* [BotDetect PHP Captcha integration for the Symfony framework](https://captcha.com/doc/php/symfony-captcha-bundle-quickstart.html)
 
 
 ## Questions?
