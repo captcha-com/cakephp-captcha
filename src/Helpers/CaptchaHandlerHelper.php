@@ -181,7 +181,7 @@ class CaptchaHandlerHelper {
         // BotDetect built-in Ajax Captcha validation
         $input = $this->GetUrlParameter('i');
 
-        if (!is_null($input)) {
+        if (is_null($input)) {
             // jQuery validation support, the input key may be just about anything,
             // so we have to loop through fields and take the first unrecognized one
             $recognized = array('get', 'c', 't', 'd');
