@@ -103,7 +103,7 @@ if (! function_exists('captcha_validate')) {
      */
     function captcha_validate($userInput = null, $instanceId = null)
     {
-        if (!$_POST) {
+        if ('POST' !== $_SERVER['REQUEST_METHOD']) {
             return false;
         }
 
@@ -142,13 +142,13 @@ if (! function_exists('captcha_reset')) {
      */
     function captcha_reset($captchaId = '')
     {
-        if (empty($captchaId) && \Request::isMethod('get')) {
+        if (empty($captchaId) && 'GET' === $_SERVER['REQUEST_METHOD']) {
             $errorMessages  = 'The "captcha_reset" helper function requires you to pass the configuration option defined in config/captcha.php file on HTTP GET request. '; 
             $errorMessages .= 'For example: captcha_reset(\'LoginCaptcha\');';
             throw new InvalidArgumentException($errorMessages);
         }
 
-        if (empty($captchaId) && \Request::isMethod('post')) {
+        if (empty($captchaId) && 'POST' === $_SERVER['REQUEST_METHOD']) {
             $captchaId = find_captcha_id_in_form_data(\Request::all());
         }
 
