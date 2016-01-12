@@ -149,7 +149,7 @@ if (! function_exists('captcha_reset')) {
         }
 
         if (empty($captchaId) && 'POST' === $_SERVER['REQUEST_METHOD']) {
-            $captchaId = find_captcha_id_in_form_data(\Request::all());
+            $captchaId = find_captcha_id_in_form_data($_POST);
         }
 
         $captcha = captcha_instance($captchaId);
