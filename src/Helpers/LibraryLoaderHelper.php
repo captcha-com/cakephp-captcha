@@ -1,10 +1,11 @@
-<?php namespace CakeCaptcha\Helpers;
+<?php
+
+namespace CakeCaptcha\Helpers;
 
 use CakeCaptcha\Config\Path;
-use CakeCaptcha\Config\UserCaptchaConfiguration;
 
-final class LibraryLoaderHelper {
-
+final class LibraryLoaderHelper
+{
     /**
      * Disable instance creation.
      */
@@ -13,18 +14,15 @@ final class LibraryLoaderHelper {
     /**
      * Load BotDetect CAPTCHA Library and override Captcha Library settings.
      *
-     * @param array  $p_Config
      * @return void
      */
-    public static function Load($p_Config = array()) {
+    public static function load()
+    {
         // load bd php library
-        self::LoadBotDetectLibrary();
+        self::loadBotDetectLibrary();
 
         // load the captcha configuration defaults
-        self::LoadCaptchaConfigDefaults();
-
-        // load user's captcha config
-        self::LoadUserCaptchaConfig($p_Config);
+        self::loadCaptchaConfigDefaults();
     }
 
     /**
@@ -32,8 +30,9 @@ final class LibraryLoaderHelper {
      *
      * @return void
      */
-    private static function LoadBotDetectLibrary() {
-        self::IncludeFile(Path::GetBotDetectFilePathInLibrary());
+    private static function loadBotDetectLibrary()
+    {
+        self::includeFile(Path::getBotDetectFilePath(), true);
     }
 
     /**
@@ -41,39 +40,22 @@ final class LibraryLoaderHelper {
      *
      * @return void
      */
-    private static function LoadCaptchaConfigDefaults() {
-        self::IncludeFile(Path::GetCaptchaConfigDefaultsFilePath());
-    }
-    
-    /**
-     * Load user's captcha configuration.
-     *
-     * @param array  $p_Config
-     */
-    private static function LoadUserCaptchaConfig($p_Config = array()) {
-        $userConfig = new UserCaptchaConfiguration();
-
-        // store user's captcha config file path
-        if (array_key_exists('CaptchaId', $p_Config) &&
-            array_key_exists('CaptchaConfigFilePath', $p_Config)
-        ) {
-            $userConfig->StorePath($p_Config['CaptchaId'], $p_Config['CaptchaConfigFilePath']);
-        }
-
-        $configFilePath = $userConfig->GetPhysicalPath();
-        self::IncludeFile($configFilePath);
+    private static function loadCaptchaConfigDefaults()
+    {
+        self::includeFile(Path::getCaptchaConfigDefaultsFilePath(), true);
     }
 
     /**
      * Include a file.
      *
-     * @param string  $p_FilePath
+     * @param string  $filePath
+     * @param bool  $once
      * @return void
      */
-    private static function IncludeFile($p_FilePath) {
-        if (is_file($p_FilePath)) {
-            include($p_FilePath);
+    private static function includeFile($filePath, $once = false)
+    {
+        if (is_file($filePath)) {
+            $once ? include_once($filePath) : include($filePath);
         }
     }
-
 }

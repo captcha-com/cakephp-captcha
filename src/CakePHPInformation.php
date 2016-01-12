@@ -1,9 +1,11 @@
-<?php namespace CakeCaptcha;
+<?php
+
+namespace CakeCaptcha;
 
 use Cake\Routing\Router;
 
-final class CakePHPInformation {
-
+final class CakePHPInformation
+{
     /**
      * Disable instance creation.
      */
@@ -12,19 +14,23 @@ final class CakePHPInformation {
     /**
      * Get config folder path.
      *
+     * @param string  $path
      * @return string
      */
-    public static function GetConfigPath() {
-        return ROOT . DS . 'config';
+    public static function getConfigPath($path = '')
+    {
+        return ROOT . DS . 'config' . ($path ? DS . $path : $path);
     }
 
     /**
      * Get controller folder path.
      *
+     * @param string  $path
      * @return string
      */
-    public static function GetControllersPath() {
-        return APP . 'Controller';
+    public static function getControllersPath($path = '')
+    {
+        return APP . 'Controller' . ($path ? DS . $path : $path);
     }
 
     /**
@@ -32,8 +38,8 @@ final class CakePHPInformation {
      *
      * @return string
      */
-    public static function GetBaseUrl() {
+    public static function getBaseUrl()
+    {
       	return Router::url('/', true);
     }
-
 }

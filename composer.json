@@ -24,7 +24,10 @@
     "autoload": {
         "psr-4": {
             "CakeCaptcha\\": "src/"
-        }
+        },
+        "files": [
+            "src/Helpers/helpers.php"
+        ]
     },
     "extra": {
         "branch-alias": {
