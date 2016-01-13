@@ -1,10 +1,10 @@
 <?php
 
-namespace CakeCaptcha\Helpers;
+namespace CakeCaptcha\Support;
 
-use CakeCaptcha\Config\Path;
+use CakeCaptcha\Support\Path;
 
-final class LibraryLoaderHelper
+final class LibraryLoader
 {
     /**
      * Disable instance creation.
@@ -14,15 +14,16 @@ final class LibraryLoaderHelper
     /**
      * Load BotDetect CAPTCHA Library and override Captcha Library settings.
      *
+     * @param object  $session
      * @return void
      */
-    public static function load()
+    public static function load($session)
     {
         // load bd php library
         self::loadBotDetectLibrary();
 
         // load the captcha configuration defaults
-        self::loadCaptchaConfigDefaults();
+        self::loadCaptchaConfigDefaults($session);
     }
 
     /**
@@ -40,9 +41,9 @@ final class LibraryLoaderHelper
      *
      * @return void
      */
-    private static function loadCaptchaConfigDefaults()
+    private static function loadCaptchaConfigDefaults($session)
     {
-        self::includeFile(Path::getCaptchaConfigDefaultsFilePath(), true);
+        self::includeFile(Path::getCaptchaConfigDefaultsFilePath(), true, $session);
     }
 
     /**
@@ -52,7 +53,7 @@ final class LibraryLoaderHelper
      * @param bool  $once
      * @return void
      */
-    private static function includeFile($filePath, $once = false)
+    private static function includeFile($filePath, $once = false, $includeData = null)
     {
         if (is_file($filePath)) {
             $once ? include_once($filePath) : include($filePath);

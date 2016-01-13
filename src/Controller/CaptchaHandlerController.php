@@ -4,16 +4,33 @@ namespace CakeCaptcha\Controller;
 
 use App\Controller\AppController;
 use Cake\Event\Event;
-use CakeCaptcha\Config\Path;
-use CakeCaptcha\Helpers\HttpHelper;
-use CakeCaptcha\Integration\BotDetectCaptcha;
+use CakeCaptcha\Support\Path;
 
 class CaptchaHandlerController extends AppController
 {
     /**
-     * @var object
+     * Initialization hook method.
+     *
+     * @return void
      */
-    private $captcha;
+    public function initialize()
+    {
+        if ($this->isGetResourceContentsRequest()) {
+            // validate filename
+            $filename = $this->getUrlParameter('get');
+            if (!preg_match('/^[a-z-]+\.(css|gif|js)$/', $filename)) {
+                $this->badRequest('Invalid file name.');
+            }
+        } else {
+            // validate captcha id and load CaptchaComponent
+            $captchaId = $this->getUrlParameter('c');
+            if (!is_null($captchaId) && preg_match('/^(\w+)$/ui', $captchaId)) {
+                $this->loadComponent('CakeCaptcha.Captcha', [$captchaId]);
+            } else {
+                $this->badRequest('Invalid captcha id.');
+            }
+        }
+    }
 
     /*
      * Allow access to index action of this controller while using CakePHP Auth component.
@@ -39,10 +56,8 @@ class CaptchaHandlerController extends AppController
             $this->getResourceContents();
         } else {
             // getting captcha image, sound, validation result
-            $this->getBotDetectCaptchaInstance();
-
-            if (is_null($this->captcha)) {
-                HttpHelper::badRequest('captcha');
+            if (is_null($this->Captcha)) {
+                \BDC_HttpHelper::BadRequest('captcha');
             }
 
             $commandString = $this->getUrlParameter('get');
@@ -72,40 +87,20 @@ class CaptchaHandlerController extends AppController
     }
 
     /**
-     * Get CAPTCHA object instance.
-     *
-     * @return void
-     */
-    private function getBotDetectCaptchaInstance()
-    {
-        $captchaId = $this->getUrlParameter('c');
-        if (!is_null($captchaId) && preg_match('/^(\w+)$/ui', $captchaId)) {
-            $this->captcha = BotDetectCaptcha::getCaptchaInstance(['CaptchaId' => $captchaId]);
-        } else {
-            HttpHelper::badRequest('Invalid captcha id.');
-        }
-    }
-
-    /**
      * Get contents of Captcha resources (js, css, gif files).
      *
      * @return string
      */
     public function getResourceContents()
     {
-        $fileName = $this->getUrlParameter('get');
+        $filename = $this->getUrlParameter('get');
 
-        if (!preg_match('/^[a-z-]+\.(css|gif|js)$/', $fileName)) {
-            HttpHelper::badRequest('Invalid file name.');
-        }
-
-        $resourcePath = realpath(Path::getPublicDirPathInLibrary() . $fileName);
+        $resourcePath = realpath(Path::getPublicDirPathInLibrary() . $filename);
 
         if (!is_file($resourcePath)) {
-            HttpHelper::badRequest(sprintf('File "%s" could not be found.', $fileName));
+            $this->badRequest(sprintf('File "%s" could not be found.', $filename));
         }
 
-        $fileInfo  = pathinfo($resourcePath);
         $mimeTypes = ['css' => 'text/css', 'gif' => 'image/gif', 'js' => 'application/x-javascript'];
 
         // captcha resource file information
@@ -125,7 +120,7 @@ class CaptchaHandlerController extends AppController
      */
     public function getImage()
     {
-        if (is_null($this->captcha)) {
+        if (is_null($this->Captcha)) {
             \BDC_HttpHelper::BadRequest('captcha');
         }
 
@@ -139,7 +134,7 @@ class CaptchaHandlerController extends AppController
         \BDC_HttpHelper::DisallowCache();
 
         // response MIME type & headers
-        $mimeType = $this->captcha->CaptchaBase->ImageMimeType;
+        $mimeType = $this->Captcha->CaptchaBase->ImageMimeType;
         header("Content-Type: {$mimeType}");
 
         // we don't support content chunking, since image files
@@ -147,8 +142,8 @@ class CaptchaHandlerController extends AppController
         header('Accept-Ranges: none');
 
         // image generation
-        $rawImage = $this->captcha->CaptchaBase->GetImage($instanceId);
-        $this->captcha->CaptchaBase->SaveCodeCollection();
+        $rawImage = $this->Captcha->CaptchaBase->GetImage($instanceId);
+        $this->Captcha->CaptchaBase->SaveCodeCollection();
 
         $length = strlen($rawImage);
         header("Content-Length: {$length}");
@@ -162,7 +157,7 @@ class CaptchaHandlerController extends AppController
      */
     public function getSound()
     {
-        if (is_null($this->captcha)) {
+        if (is_null($this->Captcha)) {
             \BDC_HttpHelper::BadRequest('captcha');
         }
 
@@ -176,12 +171,12 @@ class CaptchaHandlerController extends AppController
         \BDC_HttpHelper::SmartDisallowCache();
 
         // response MIME type & headers
-        $mimeType = $this->captcha->CaptchaBase->SoundMimeType;
+        $mimeType = $this->Captcha->CaptchaBase->SoundMimeType;
         header("Content-Type: {$mimeType}");
         header('Content-Transfer-Encoding: binary');
 
         // sound generation
-        $rawSound = $this->captcha->CaptchaBase->GetSound($instanceId);
+        $rawSound = $this->Captcha->CaptchaBase->GetSound($instanceId);
         return $rawSound;
     }
 
@@ -192,7 +187,7 @@ class CaptchaHandlerController extends AppController
      */
     public function getValidationResult()
     {
-        if (is_null($this->captcha)) {
+        if (is_null($this->Captcha)) {
             \BDC_HttpHelper::BadRequest('captcha');
         }
 
@@ -209,8 +204,8 @@ class CaptchaHandlerController extends AppController
         $userInput = $this->getUserInput();
 
         // JSON-encoded validation result
-        $result = $this->captcha->AjaxValidate($userInput, $instanceId);
-        $this->captcha->CaptchaBase->Save();
+        $result = $this->Captcha->AjaxValidate($userInput, $instanceId);
+        $this->Captcha->CaptchaBase->Save();
 
         $resultJson = $this->getJsonValidationResult($result);
 
@@ -282,5 +277,20 @@ class CaptchaHandlerController extends AppController
     private function getUrlParameter($param)
     {
         return filter_input(INPUT_GET, $param);
+    }
+
+    /**
+     * Throw a bad request.
+     *
+     * @param string  $message
+     * @return void
+     */
+    private function badRequest($message)
+    {
+        while (ob_get_contents()) { ob_end_clean(); }
+        header('HTTP/1.1 400 Bad Request');
+        header('Content-Type: text/plain');
+        echo $message;
+        exit;
     }
 }

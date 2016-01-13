@@ -1,8 +1,6 @@
 <?php
 
-namespace CakeCaptcha\Config;
-
-use CakeCaptcha\CakePHPInformation;
+namespace CakeCaptcha\Support;
 
 final class Path
 {
@@ -10,6 +8,28 @@ final class Path
      * Disable instance creation.
      */
     private function __construct() {}
+
+    /**
+     * Get CakePHP's config folder path.
+     *
+     * @param string  $path
+     * @return string
+     */
+    public static function getCakePHPConfigPath($path = '')
+    {
+        return ROOT . DS . 'config' . ($path ? DS . $path : $path);
+    }
+
+    /**
+     * Get CakePHP's controller folder path.
+     *
+     * @param string  $path
+     * @return string
+     */
+    public static function getCakePHPControllersPath($path = '')
+    {
+        return APP . 'Controller' . ($path ? DS . $path : $path);
+    }
 
     /**
      * Physical path of the captcha-com/captcha package.
@@ -58,6 +78,6 @@ final class Path
      */
     public static function getUserCaptchaConfigFilePath()
     {
-        return CakePHPInformation::getConfigPath('captcha.php');
+        return self::getCakePHPConfigPath('captcha.php');
     }
 }

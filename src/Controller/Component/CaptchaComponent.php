@@ -1,48 +1,61 @@
 <?php
 
-namespace CakeCaptcha\Helpers;
+namespace CakeCaptcha\Controller\Component;
 
-use CakeCaptcha\Config\UserCaptchaConfiguration;
-use CakeCaptcha\Helpers\LibraryLoaderHelper;
+use Cake\Controller\Component;
+use CakeCaptcha\Support\LibraryLoader;
+use CakeCaptcha\Support\UserCaptchaConfiguration;
 
-class BotDetectCaptchaHelper
-{ 
+class CaptchaComponent extends Component
+{
     /**
      * @var object
      */
     private $captcha;
 
     /**
-     * Create a new BotDetect CAPTCHA Helper object.
-     *
-     * @param  array  $config
-     * @return void
+     * @var object
      */
-    public function __construct(array $config)
-    {
-        // init session
-        $this->initSession();
-
-        // load BotDetect Library
-        LibraryLoaderHelper::load();
-
-        // create a BotDetect Captcha object instance
-        $this->initCaptcha($config);
- 
-        // execute user's captcha configuration options
-        UserCaptchaConfiguration::execute($this->captcha, $config);
-    }
+    private static $instance;
 
     /**
-     * Initialize session.
-     * 
+     * Initialization hook method.
+     *
      * @return void
      */
-    public function initSession()
+    public function initialize(array $params)
     {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
+        self::$instance =& $this;
+
+        $session = $this->request->session();
+
+        // load botdetect captcha library
+        LibraryLoader::load($session);
+
+        if (empty($params) || empty($params[0])) {
+            $error_messages  = 'The CaptchaComponent requires you to pass the configuration option in an array that defined in config/captcha.php file.<br>';
+            $error_messages .= 'For example: $this->loadComponent(\'CakeCaptcha.Captcha\', [\'ContactCaptcha\']);';
+            throw new \InvalidArgumentException($error_messages);
         }
+
+        $captchaId = $params[0];
+
+        // get captcha config
+        $config = UserCaptchaConfiguration::get($captchaId);
+
+        if (is_null($config)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" option could not be found in config/captcha.php file.', $captchaId));
+        }
+
+        if (!is_array($config)) {
+            throw new \InvalidArgumentException(sprintf('Expected argument of type "array", "%s" given', gettype($config)));
+        }
+
+        // init botdetect captcha instance
+        $this->initCaptcha($config);
+
+        // execute user's captcha configuration options
+        UserCaptchaConfiguration::execute($this->captcha, $config);
     }
 
     /**
@@ -61,6 +74,17 @@ class BotDetectCaptchaHelper
         if (array_key_exists('UserInputId', $config)) {
             $this->captcha->UserInputId = $config['UserInputId'];
         }
+    }
+
+    /**
+     * Get CaptchaComponent object instance.
+     *
+     * @param  array  $config
+     * @return object
+     */
+    public static function &getInstance()
+    {
+        return self::$instance;
     }
 
     public function __call($method, $args = array())

@@ -1,9 +1,8 @@
 <?php
 
-namespace CakeCaptcha\Config;
+namespace CakeCaptcha\Support;
 
-use CakeCaptcha\Config\Path;
-use CakeCaptcha\Config\UserCaptchaConfigurationParser;
+use Cake\Core\Configure;
 
 class UserCaptchaConfiguration
 {
@@ -39,20 +38,17 @@ class UserCaptchaConfiguration
      */
     public static function all()
     {
-        $configPath = Path::getUserCaptchaConfigFilePath();
+        // all default configs  
+        $configsWithoutCaptcha = Configure::read();
 
-        if (!file_exists($configPath)) {
-            throw new \RuntimeException(sprintf('File "%s" could not be found.', $configPath));
-        }
+        // all default configs and captcha configs
+        Configure::load('captcha');
+        $configsWithCaptcha = Configure::read();
 
-        if (captcha_library_is_loaded()) {
-            $configs = require $configPath;
-        } else {
-            $configParser = new UserCaptchaConfigurationParser($configPath);
-            $configs = $configParser->getConfigs();
-        }
+        // get only captcha configs
+        $captchaConfigs = array_diff_key($configsWithCaptcha, $configsWithoutCaptcha);
 
-        return $configs;
+        return $captchaConfigs;
     }
 
     /**
@@ -64,17 +60,14 @@ class UserCaptchaConfiguration
      */
     public static function execute(\Captcha $captcha, array $config)
     {
-        $captchaId = $config['CaptchaId'];
-        $userConfig = self::get($captchaId);
+        unset($config['CaptchaId']);
+        unset($config['UserInputId']);
 
-        unset($userConfig['CaptchaId']);
-        unset($userConfig['UserInputId']);
-
-        if (empty($userConfig)) {
+        if (empty($config)) {
             return;
         }
 
-        foreach ($userConfig as $option => $value) {
+        foreach ($config as $option => $value) {
             $captcha->$option = $value;
         }
     }
