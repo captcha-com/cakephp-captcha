@@ -35,7 +35,7 @@ class CaptchaComponent extends Component
         if (empty($params) || empty($params[0])) {
             $error_messages  = 'The CaptchaComponent requires you to pass the configuration option in an array that defined in config/captcha.php file.<br>';
             $error_messages .= 'For example: $this->loadComponent(\'CakeCaptcha.Captcha\', [\'ContactCaptcha\']);';
-            throw new \InvalidArgumentException($error_messages);
+            throw new InvalidArgumentException($error_messages);
         }
 
         $captchaId = $params[0];
@@ -44,11 +44,11 @@ class CaptchaComponent extends Component
         $config = UserCaptchaConfiguration::get($captchaId);
 
         if (is_null($config)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" option could not be found in config/captcha.php file.', $captchaId));
+            throw new InvalidArgumentException(sprintf('The "%s" option could not be found in config/captcha.php file.', $captchaId));
         }
 
         if (!is_array($config)) {
-            throw new \InvalidArgumentException(sprintf('Expected argument of type "array", "%s" given', gettype($config)));
+            throw new UnexpectedTypeException($config, 'array');
         }
 
         // init botdetect captcha instance
@@ -69,7 +69,7 @@ class CaptchaComponent extends Component
         // set captchaId and create an instance of Captcha
         $captchaId = (array_key_exists('CaptchaId', $config)) ? $config['CaptchaId'] : 'defaultCaptchaId';
         $this->captcha = new \Captcha($captchaId);
-        
+
         // set user's input id
         if (array_key_exists('UserInputId', $config)) {
             $this->captcha->UserInputId = $config['UserInputId'];
@@ -79,7 +79,6 @@ class CaptchaComponent extends Component
     /**
      * Get CaptchaComponent object instance.
      *
-     * @param  array  $config
      * @return object
      */
     public static function &getInstance()
