@@ -21,14 +21,14 @@ $session = $includeData;
 // re-define custom session handler functions
 function CAKE_Session_Save($key, $value)
 {
-	global $session;
+    global $session;
     // save the given value with the given string key
     $session->write($key, serialize($value));
 }
 
 function CAKE_Session_Load($key)
 {
-	global $session;
+    global $session;
     // load persisted value for the given string key
     if ($session->check($key)) {
         return unserialize($session->read($key)); // NOTE: returns false in case of failure
@@ -37,7 +37,7 @@ function CAKE_Session_Load($key)
 
 function CAKE_Session_Clear($key)
 {
-	global $session;
+    global $session;
     // clear persisted value for the given string key
     if ($session->check($key)) {
         $session->delete($key);
