@@ -14,6 +14,13 @@ class CaptchaComponent extends Component
      * @var object
      */
     private $captcha;
+    
+    /**
+     * BotDetect CakePHP CAPTCHA plugin information.
+     *
+     * @var array
+     */
+    public static $productInfo;
 
     /**
      * @var object
@@ -148,4 +155,20 @@ class CaptchaComponent extends Component
             $this->$method();
         }
     }
+
+    /**
+     * Get the BotDetect CakePHP CAPTCHA plugin information.
+     *
+     * @return array
+     */
+    public static function getProductInfo()
+    {
+        return self::$productInfo;
+    }
 }
+
+// static field initialization
+CaptchaComponent::$productInfo = array( 
+    'name' => 'BotDetect PHP Captcha integration for the CakePHP framework', 
+    'version' => '4.0.0-Dev'
+);
