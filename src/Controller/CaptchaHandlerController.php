@@ -264,8 +264,8 @@ class CaptchaHandlerController extends AppController
         return $resultStr;
     }
 
-    /*
-     * return bool
+    /**
+     * @return bool
      */
     private function isGetResourceContentsRequest()
     {
