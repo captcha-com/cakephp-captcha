@@ -8,7 +8,7 @@ $BotDetect = \CaptchaConfiguration::GetSettings();
 
 $BotDetect->HandlerUrl = $baseUrl . '/captcha-handler';
 
-// use Laravel session to store persist Captcha codes and other Captcha data
+// use CakePHP session to store persist Captcha codes and other Captcha data
 $BotDetect->SaveFunctionName = 'CAKE_Session_Save';
 $BotDetect->LoadFunctionName = 'CAKE_Session_Load';
 $BotDetect->ClearFunctionName = 'CAKE_Session_Clear';
