@@ -30,17 +30,24 @@ class CaptchaComponent extends Component
         self::$instance =& $this;
 
         $session = $this->request->session();
+        
+        // change the keys in $param array to lowercase,
+        // this will avoid user being able to pass in a lowercase option.
+        $params = array_change_key_case($params, CASE_LOWER);
 
         // load botdetect captcha library
         LibraryLoader::load($session);
 
-        if (empty($params) || empty($params[0])) {
-            $error_messages  = 'The CaptchaComponent requires you to pass the configuration option in an array that defined in config/captcha.php file.<br>';
-            $error_messages .= 'For example: $this->loadComponent(\'CakeCaptcha.Captcha\', [\'ContactCaptcha\']);';
+        if (empty($params) || 
+            !array_key_exists('captchaconfig', $params) ||
+            empty($params['captchaconfig'])
+        ) {
+            $error_messages  = 'The CaptchaComponent requires you to declare "CaptchaConfig" option and assigns a captcha configuration key defined in config/captcha.php file.<br>';
+            $error_messages .= 'For example: $this->loadComponent(\'CakeCaptcha.Captcha\', [\'CaptchaConfig\' => \'ContactCaptcha\']);';
             throw new InvalidArgumentException($error_messages);
         }
 
-        $captchaId = $params[0];
+        $captchaId = $params['captchaconfig'];
 
         // get captcha config
         $config = UserCaptchaConfiguration::get($captchaId);

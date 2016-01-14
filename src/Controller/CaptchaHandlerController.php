@@ -25,7 +25,9 @@ class CaptchaHandlerController extends AppController
             // validate captcha id and load CaptchaComponent
             $captchaId = $this->getUrlParameter('c');
             if (!is_null($captchaId) && preg_match('/^(\w+)$/ui', $captchaId)) {
-                $this->loadComponent('CakeCaptcha.Captcha', [$captchaId]);
+                $this->loadComponent('CakeCaptcha.Captcha', [
+                    'CaptchaConfig' => $captchaId
+                ]);
             } else {
                 $this->badRequest('Invalid captcha id.');
             }
