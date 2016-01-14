@@ -3,6 +3,8 @@
 namespace CakeCaptcha\Controller\Component;
 
 use Cake\Controller\Component;
+use CakeCaptcha\Controller\Exception\InvalidArgumentException;
+use CakeCaptcha\Controller\Exception\UnexpectedTypeException;
 use CakeCaptcha\Support\LibraryLoader;
 use CakeCaptcha\Support\UserCaptchaConfiguration;
 
