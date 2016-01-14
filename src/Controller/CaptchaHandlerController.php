@@ -17,13 +17,13 @@ class CaptchaHandlerController extends AppController
     {
         if ($this->isGetResourceContentsRequest()) {
             // validate filename
-            $filename = $this->getUrlParameter('get');
+            $filename = $this->request->query('get');
             if (!preg_match('/^[a-z-]+\.(css|gif|js)$/', $filename)) {
                 $this->badRequest('Invalid file name.');
             }
         } else {
             // validate captcha id and load CaptchaComponent
-            $captchaId = $this->getUrlParameter('c');
+            $captchaId = $this->request->query('c');
             if (!is_null($captchaId) && preg_match('/^(\w+)$/ui', $captchaId)) {
                 $this->loadComponent('CakeCaptcha.Captcha', [
                     'CaptchaConfig' => $captchaId
@@ -62,7 +62,7 @@ class CaptchaHandlerController extends AppController
                 \BDC_HttpHelper::BadRequest('captcha');
             }
 
-            $commandString = $this->getUrlParameter('get');
+            $commandString = $this->request->query('get');
             if (!\BDC_StringHelper::HasValue($commandString)) {
                 \BDC_HttpHelper::BadRequest('command');
             }
@@ -95,7 +95,7 @@ class CaptchaHandlerController extends AppController
      */
     public function getResourceContents()
     {
-        $filename = $this->getUrlParameter('get');
+        $filename = $this->request->query('get');
 
         $resourcePath = realpath(Path::getPublicDirPathInLibrary() . $filename);
 
@@ -219,7 +219,7 @@ class CaptchaHandlerController extends AppController
      */
     private function getInstanceId()
     {
-        $instanceId = $this->getUrlParameter('t');
+        $instanceId = $this->request->query('t');
         if (!\BDC_StringHelper::HasValue($instanceId) ||
             !\BDC_CaptchaBase::IsValidInstanceId($instanceId)
         ) {
@@ -236,13 +236,13 @@ class CaptchaHandlerController extends AppController
     private function getUserInput()
     {
         // BotDetect built-in Ajax Captcha validation
-        $input = $this->getUrlParameter('i');
+        $input = $this->request->query('i');
 
         if (is_null($input)) {
             // jQuery validation support, the input key may be just about anything,
             // so we have to loop through fields and take the first unrecognized one
             $recognized = array('get', 'c', 't', 'd');
-            foreach ($_GET as $key => $value) {
+            foreach ($this->request->query as $key => $value) {
                 if (!in_array($key, $recognized)) {
                     $input = $value;
                     break;
@@ -269,16 +269,8 @@ class CaptchaHandlerController extends AppController
      */
     private function isGetResourceContentsRequest()
     {
-        return array_key_exists('get', $_GET) && !array_key_exists('c', $_GET);
-    }
-
-    /**
-     * @param  string  $param
-     * @return string|null
-     */
-    private function getUrlParameter($param)
-    {
-        return filter_input(INPUT_GET, $param);
+        $http_get_data = $this->request->query;
+        return array_key_exists('get', $http_get_data) && !array_key_exists('c', $http_get_data);
     }
 
     /**

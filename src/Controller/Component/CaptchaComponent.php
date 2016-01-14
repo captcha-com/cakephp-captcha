@@ -30,7 +30,7 @@ class CaptchaComponent extends Component
         self::$instance =& $this;
 
         $session = $this->request->session();
-        
+
         // change the keys in $param array to lowercase,
         // this will avoid user being able to pass in a lowercase option (e.g. captchaconfig)
         $params = array_change_key_case($params, CASE_LOWER);
