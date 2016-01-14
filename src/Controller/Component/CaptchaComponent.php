@@ -32,7 +32,7 @@ class CaptchaComponent extends Component
         $session = $this->request->session();
         
         // change the keys in $param array to lowercase,
-        // this will avoid user being able to pass in a lowercase option.
+        // this will avoid user being able to pass in a lowercase option (e.g. captchaconfig)
         $params = array_change_key_case($params, CASE_LOWER);
 
         // load botdetect captcha library
@@ -43,7 +43,7 @@ class CaptchaComponent extends Component
             empty($params['captchaconfig'])
         ) {
             $error_messages  = 'The CaptchaComponent requires you to declare "CaptchaConfig" option and assigns a captcha configuration key defined in config/captcha.php file.<br>';
-            $error_messages .= 'For example: $this->loadComponent(\'CakeCaptcha.Captcha\', [\'CaptchaConfig\' => \'ContactCaptcha\']);';
+            $error_messages .= 'For example: $this->loadComponent(\'CakeCaptcha.Captcha\', [\'captchaConfig\' => \'ContactCaptcha\']);';
             throw new InvalidArgumentException($error_messages);
         }
 
