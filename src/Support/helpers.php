@@ -89,6 +89,6 @@ if (! function_exists('captcha_layout_stylesheet_url')) {
      */
     function captcha_layout_stylesheet_url()
     {
-        return Router::url('/', true) . '/captcha-handler?get=bdc-layout-stylesheet.css';
+        return Router::url('/', true) . 'captcha-handler?get=bdc-layout-stylesheet.css';
     }
 }

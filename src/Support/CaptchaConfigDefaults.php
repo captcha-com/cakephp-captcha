@@ -2,11 +2,9 @@
 
 use Cake\Routing\Router;
 
-$baseUrl = Router::url('/', true);
-
 $BotDetect = \CaptchaConfiguration::GetSettings();
 
-$BotDetect->HandlerUrl = $baseUrl . '/captcha-handler';
+$BotDetect->HandlerUrl = Router::url('/', true) . 'captcha-handler';
 
 // use CakePHP session to store persist Captcha codes and other Captcha data
 $BotDetect->SaveFunctionName = 'CAKE_Session_Save';
