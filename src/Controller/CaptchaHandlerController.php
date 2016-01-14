@@ -32,7 +32,7 @@ class CaptchaHandlerController extends AppController
         }
     }
 
-    /*
+    /**
      * Allow access to index action of this controller while using CakePHP Auth component.
      * 
      * @return void
