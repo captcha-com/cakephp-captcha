@@ -4,8 +4,13 @@ namespace CakeCaptcha\Support;
 
 use Cake\Core\Configure;
 
-class UserCaptchaConfiguration
+final class UserCaptchaConfiguration
 {
+    /**
+     * Disable instance creation.
+     */
+    private function __construct() {}
+
     /**
      * Get user's captcha configuration by captcha id.
      *
