@@ -45,7 +45,7 @@ class CaptchaComponent extends Component
         // load botdetect captcha library
         LibraryLoader::load($session);
 
-        if (empty($params) || 
+        if (empty($params) ||
             !array_key_exists('captchaconfig', $params) ||
             empty($params['captchaconfig'])
         ) {
@@ -168,7 +168,7 @@ class CaptchaComponent extends Component
 }
 
 // static field initialization
-CaptchaComponent::$productInfo = array( 
+CaptchaComponent::$productInfo = [
     'name' => 'BotDetect PHP Captcha integration for the CakePHP framework', 
     'version' => '4.0.0-Dev'
-);
+];
