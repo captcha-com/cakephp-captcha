@@ -39,7 +39,6 @@ final class UserCaptchaConfiguration
      * Get all user's captcha configuration.
      *
      * @return array
-     * @throw \RuntimeException
      */
     public static function all()
     {
