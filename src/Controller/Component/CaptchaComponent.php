@@ -38,12 +38,12 @@ class CaptchaComponent extends Component
 
         $session = $this->request->session();
 
+        // load botdetect captcha library
+        LibraryLoader::load($session);
+
         // change the keys in $param array to lowercase,
         // this will avoid user being able to pass in a lowercase option (e.g. captchaconfig)
         $params = array_change_key_case($params, CASE_LOWER);
-
-        // load botdetect captcha library
-        LibraryLoader::load($session);
 
         if (empty($params) ||
             !array_key_exists('captchaconfig', $params) ||
