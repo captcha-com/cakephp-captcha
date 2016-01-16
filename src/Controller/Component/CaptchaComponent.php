@@ -59,7 +59,7 @@ class CaptchaComponent extends Component
         // get captcha config
         $config = UserCaptchaConfiguration::get($captchaId);
 
-        if (is_null($config)) {
+        if (null === $config) {
             throw new InvalidArgumentException(sprintf('The "%s" option could not be found in config/captcha.php file.', $captchaId));
         }
 
