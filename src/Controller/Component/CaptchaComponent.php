@@ -49,9 +49,9 @@ class CaptchaComponent extends Component
             !array_key_exists('captchaconfig', $params) ||
             empty($params['captchaconfig'])
         ) {
-            $error_messages  = 'The BotDetect Captcha component requires you to declare "captchaConfig" option and assigns a captcha configuration key defined in config/captcha.php file.<br>';
-            $error_messages .= 'For example: $this->loadComponent(\'CakeCaptcha.Captcha\', [\'captchaConfig\' => \'ContactCaptcha\']);';
-            throw new InvalidArgumentException($error_messages);
+            $errorMessage  = 'The BotDetect Captcha component requires you to declare "captchaConfig" option and assigns a captcha configuration key defined in config/captcha.php file.<br>';
+            $errorMessage .= 'For example: $this->loadComponent(\'CakeCaptcha.Captcha\', [\'captchaConfig\' => \'ContactCaptcha\']);';
+            throw new InvalidArgumentException($errorMessage);
         }
 
         $captchaId = $params['captchaconfig'];
