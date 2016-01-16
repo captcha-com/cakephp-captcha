@@ -72,7 +72,7 @@ if (! function_exists('captcha_reset')) {
     /**
      * Reset captcha for current instance.
      *
-     * @return bool
+     * @return void
      */
     function captcha_reset()
     {
