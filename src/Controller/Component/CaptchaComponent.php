@@ -87,8 +87,8 @@ class CaptchaComponent extends Component
         $this->captcha = new \Captcha($captchaId);
 
         // set user's input id
-        if (array_key_exists('UserInputId', $config)) {
-            $this->captcha->UserInputId = $config['UserInputId'];
+        if (array_key_exists('UserInputID', $config)) {
+            $this->captcha->UserInputID = $config['UserInputID'];
         }
     }
 
