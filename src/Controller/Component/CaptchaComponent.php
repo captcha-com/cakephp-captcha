@@ -67,11 +67,11 @@ class CaptchaComponent extends Component
             throw new UnexpectedTypeException($config, 'array');
         }
 
+        // save user's captcha configuration options
+        UserCaptchaConfiguration::save($config);
+        
         // init botdetect captcha instance
         $this->initCaptcha($config);
-
-        // execute user's captcha configuration options
-        UserCaptchaConfiguration::execute($this->captcha, $config);
     }
 
     /**
@@ -169,6 +169,6 @@ class CaptchaComponent extends Component
 
 // static field initialization
 CaptchaComponent::$productInfo = [
-    'name' => 'BotDetect PHP Captcha integration for the CakePHP framework', 
-    'version' => '4.0.0'
+    'name' => 'BotDetect 4 PHP Captcha generator integration for the CakePHP framework', 
+    'version' => '4.1.0'
 ];

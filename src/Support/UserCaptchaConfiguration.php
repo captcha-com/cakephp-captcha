@@ -56,13 +56,12 @@ final class UserCaptchaConfiguration
     }
 
     /**
-     * Execute user's captcha configuration options.
+     * Save user's captcha configuration options.
      *
-     * @param \Captcha  $captcha
      * @param array     $config
      * @return void
      */
-    public static function execute(\Captcha $captcha, array $config)
+    public static function save(array $config)
     {
         unset($config['CaptchaId']);
         unset($config['UserInputID']);
@@ -71,8 +70,12 @@ final class UserCaptchaConfiguration
             return;
         }
 
+        $settings = \CaptchaConfiguration::LoadSettings();
+
         foreach ($config as $option => $value) {
-            $captcha->$option = $value;
+            $settings->$option = $value;
         }
+
+        \CaptchaConfiguration::SaveSettings($settings);
     }
 }
