@@ -11,7 +11,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'ExampleCaptcha' => [
-        'UserInputId' => 'CaptchaCode',
+        'UserInputID' => 'CaptchaCode',
         'CodeLength' => 4,
         'ImageWidth' => 250,
         'ImageHeight' => 50,
@@ -23,7 +23,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'ContactCaptcha' => [
-        'UserInputId' => 'CaptchaCode',
+        'UserInputID' => 'CaptchaCode',
         'CodeLength' => CaptchaRandomization::GetRandomCodeLength(4, 6),
         'ImageStyle' => ImageStyle::AncientMosaic,
     ],
@@ -34,13 +34,13 @@ return [
     |--------------------------------------------------------------------------
     */
     'LoginCaptcha' => [
-        'UserInputId' => 'CaptchaCode',
+        'UserInputID' => 'CaptchaCode',
         'CodeLength' => 3,
-        'ImageStyle' => CaptchaRandomization::GetRandomImageStyle([
+        'ImageStyle' => [
             ImageStyle::Radar,
             ImageStyle::Collage,
             ImageStyle::Fingerprints,
-        ]),
+        ],
     ],
 
     /*
@@ -49,7 +49,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'RegisterCaptcha' => [
-        'UserInputId' => 'CaptchaCode',
+        'UserInputID' => 'CaptchaCode',
         'CodeLength' => CaptchaRandomization::GetRandomCodeLength(3, 4),
         'CodeStyle' => CodeStyle::Alpha,
         'CustomLightColor' => '#9966FF',
