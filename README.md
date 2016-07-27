@@ -1,4 +1,4 @@
-# BotDetect PHP Captcha integration for the CakePHP framework
+# BotDetect PHP Captcha generator integration for the CakePHP framework
 
 [![Total Downloads](https://poser.pugx.org/captcha-com/cakephp-captcha/downloads)](https://packagist.org/packages/captcha-com/cakephp-captcha)
 [![Latest Stable Version](https://poser.pugx.org/captcha-com/cakephp-captcha/v/stable)](https://packagist.org/packages/captcha-com/cakephp-captcha)
