@@ -203,5 +203,5 @@ class CaptchaComponent extends Component
 // static field initialization
 CaptchaComponent::$productInfo = [
     'name' => 'BotDetect 4 PHP Captcha generator integration for the CakePHP framework', 
-    'version' => '4.1.1'
+    'version' => '4.2.0'
 ];
