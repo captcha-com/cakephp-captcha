@@ -75,6 +75,7 @@ class CaptchaHandlerController extends AppController
                 \BDC_HttpHelper::BadRequest('command');
             }
 
+            $commandString = \BDC_StringHelper::Normalize($commandString);
             $command = \BDC_CaptchaHttpCommand::FromQuerystring($commandString);
             $responseBody = '';
             switch ($command) {
