@@ -148,13 +148,6 @@ class CaptchaHandlerController extends AppController
             \BDC_HttpHelper::BadRequest('instance');
         }
 
-        $libVersion = \BDC_CaptchaBase::$ProductInfo['version'];
-        if(version_compare($libVersion, '4.2.0') >= 0) {
-            if (!$this->Captcha->CaptchaBase->IsInstanceIdExisted($instanceId)) {
-                \BDC_HttpHelper::BadRequest('Instance doesn\'t exist in session');
-            }
-        }
-
         // image generation invalidates sound cache, if any
         $this->clearSoundData($instanceId);
 
@@ -192,13 +185,6 @@ class CaptchaHandlerController extends AppController
         $instanceId = $this->getInstanceId();
         if (is_null($instanceId)) {
             \BDC_HttpHelper::BadRequest('instance');
-        }
-
-        $libVersion = \BDC_CaptchaBase::$ProductInfo['version'];
-        if(version_compare($libVersion, '4.2.0') >= 0) {
-            if (!$this->Captcha->CaptchaBase->IsInstanceIdExisted($instanceId)) {
-                \BDC_HttpHelper::BadRequest('Instance doesn\'t exist in session');
-            }
         }
 
         $soundBytes = $this->getSoundData($this->Captcha->getCaptchaInstance(), $instanceId);
@@ -305,7 +291,6 @@ class CaptchaHandlerController extends AppController
     // Instead of relying on unreliable user agent checks, we detect the iOS sound
     // requests by the Http headers they will always contain
     private function detectIosRangeRequest() {
-        $detected = false;
 
         if(array_key_exists('HTTP_RANGE', $_SERVER) &&
             \BDC_StringHelper::HasValue($_SERVER['HTTP_RANGE'])) {
@@ -313,19 +298,20 @@ class CaptchaHandlerController extends AppController
             // Safari on MacOS and all browsers on <= iOS 10.x
             if(array_key_exists('HTTP_X_PLAYBACK_SESSION_ID', $_SERVER) &&
                 \BDC_StringHelper::HasValue($_SERVER['HTTP_X_PLAYBACK_SESSION_ID'])) {
-                $detected = true;
+                return true;
             }
 
+            $userAgent = array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : null;
+
             // all browsers on iOS 11.x and later
-            if(array_key_exists('User-Agent', $_SERVER) &&
-                \BDC_StringHelper::HasValue($_SERVER['User-Agent'])) {
-                $userAgent = $_SERVER['User-Agent'];
-                if(strpos($userAgent, "iPhone OS") !== false || strpos($userAgent, "iPad") !== false) { // is iPhone or iPad
-                    $detected = true;
-                }
+            if(\BDC_StringHelper::HasValue($userAgent)) {
+                $userAgentLC = \BDC_StringHelper::Lowercase($userAgent);
+		      	if (\BDC_StringHelper::Contains($userAgentLC, "like mac os")) {
+		        	return true;
+		      	}
             }
         }
-        return $detected;
+        return false;
     }
 
     private function getSoundByteRange() {
@@ -495,7 +481,7 @@ class CaptchaHandlerController extends AppController
         exit;
     }
 
-    public function GetP() {
+    public function getP() {
         if (is_null($this->Captcha)) {
             \BDC_HttpHelper::BadRequest('captcha');
         }
@@ -507,14 +493,12 @@ class CaptchaHandlerController extends AppController
         }
 
         // create new one
-        $p = new \P($instanceId);
-
-        // save
-        CAKE_Session_Clear($this->Captcha->CaptchaBase->getPPersistenceKey($instanceId));
-        CAKE_Session_Save($this->Captcha->CaptchaBase->getPPersistenceKey($instanceId), $p);
+        $p = $this->Captcha->GenPw($instanceId);
+        $this->Captcha->SavePw($this->Captcha);
 
         // response data
-        $response = "{\"sp\":\"{$p->GSP()}\",\"hs\":\"{$p->GHs()}\"}";
+        $response = "{\"sp\":\"{$p->GetSP()}\",\"hs\":\"{$p->GetHs()}\"}";
+ 
 
         // response MIME type & headers
         header('Content-Type: application/json');
