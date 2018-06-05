@@ -124,13 +124,6 @@ class CaptchaComponent extends Component
     }
 
     /**
-     * @return object
-     */
-    public function getCaptchaInstance() {
-        return $this->captcha;
-    }
-
-    /**
      * Auto-magic helpers for civilized property access.
      */
     public function __get($name)
@@ -203,5 +196,5 @@ class CaptchaComponent extends Component
 // static field initialization
 CaptchaComponent::$productInfo = [
     'name' => 'BotDetect 4 PHP Captcha generator integration for the CakePHP framework', 
-    'version' => '4.2.2'
+    'version' => '4.2.3'
 ];

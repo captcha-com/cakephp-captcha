@@ -187,7 +187,7 @@ class CaptchaHandlerController extends AppController
             \BDC_HttpHelper::BadRequest('instance');
         }
 
-        $soundBytes = $this->getSoundData($this->Captcha->getCaptchaInstance(), $instanceId);
+        $soundBytes = $this->getSoundData($this->Captcha, $instanceId);
 
         if (is_null($soundBytes)) {
             \BDC_HttpHelper::BadRequest('Please reload the form page before requesting another Captcha sound');
@@ -247,7 +247,7 @@ class CaptchaHandlerController extends AppController
     }
 
 
-    public function GetSoundData($p_Captcha, $p_InstanceId) {
+    public function getSoundData($p_Captcha, $p_InstanceId) {
         $shouldCache = (
             ($p_Captcha->SoundRegenerationMode == \SoundRegenerationMode::None) || // no sound regeneration allowed, so we must cache the first and only generated sound
             $this->detectIosRangeRequest() // keep the same Captcha sound across all chunked iOS requests
@@ -394,12 +394,12 @@ class CaptchaHandlerController extends AppController
         $result = "(function() {\r\n";
 
         // add init script
-        $result .= \BDC_CaptchaScriptsHelper::GetInitScriptMarkup($this->Captcha->getCaptchaInstance(), $instanceId);
+        $result .= \BDC_CaptchaScriptsHelper::GetInitScriptMarkup($this->Captcha, $instanceId);
 
         // add remote scripts if enabled
         if ($this->Captcha->RemoteScriptEnabled) {
             $result .= "\r\n";
-            $result .= \BDC_CaptchaScriptsHelper::GetRemoteScript($this->Captcha->getCaptchaInstance());
+            $result .= \BDC_CaptchaScriptsHelper::GetRemoteScript($this->Captcha);
         }
 
         // close a self-invoking functions
