@@ -306,9 +306,9 @@ class CaptchaHandlerController extends AppController
             // all browsers on iOS 11.x and later
             if(\BDC_StringHelper::HasValue($userAgent)) {
                 $userAgentLC = \BDC_StringHelper::Lowercase($userAgent);
-		      	if (\BDC_StringHelper::Contains($userAgentLC, "like mac os")) {
-		        	return true;
-		      	}
+                if (\BDC_StringHelper::Contains($userAgentLC, "like mac os") || \BDC_StringHelper::Contains($userAgentLC, "like macos")) {
+                    return true;
+                }
             }
         }
         return false;
