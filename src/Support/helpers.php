@@ -2,6 +2,7 @@
 
 use Cake\Routing\Router;
 use CakeCaptcha\Controller\Component\CaptchaComponent;
+use CakeCaptcha\Controller\Component\SimpleCaptchaComponent;
 
 if (! function_exists('captcha_library_is_loaded')) {
     /**
@@ -27,6 +28,18 @@ if (! function_exists('captcha_instance')) {
     }
 }
 
+if (! function_exists('simple_captcha_instance')) {
+    /**
+     * Get SimpleCaptcha object instance.
+     *
+     * @return object
+     */
+    function &simple_captcha_instance()
+    {
+        return SimpleCaptchaComponent::getInstance();
+    }
+}
+
 if (! function_exists('captcha_image_html')) {
     /**
      * Generate Captcha image html.
@@ -36,6 +49,19 @@ if (! function_exists('captcha_image_html')) {
     function captcha_image_html()
     {
         $captcha =& captcha_instance();
+        return $captcha->Html();
+    }
+}
+
+if (! function_exists('simple_captcha_image_html')) {
+    /**
+     * Generate Captcha image html.
+     *
+     * @return string
+     */
+    function simple_captcha_image_html()
+    {
+        $captcha =& simple_captcha_instance();
         return $captcha->Html();
     }
 }
@@ -52,6 +78,21 @@ if (! function_exists('captcha_validate')) {
     {
         $captcha =& captcha_instance();
         return $captcha->Validate($userInput, $instanceId);
+    }
+}
+
+if (! function_exists('simple_captcha_validate')) {
+    /**
+     * Validate user's captcha code.
+     *
+     * @param string  $userInput
+     * @param string  $instanceId
+     * @return bool
+     */
+    function simple_captcha_validate($userInput = null, $captchaId = null)
+    {
+        $captcha =& simple_captcha_instance();
+        return $captcha->Validate($userInput, $captchaId);
     }
 }
 
