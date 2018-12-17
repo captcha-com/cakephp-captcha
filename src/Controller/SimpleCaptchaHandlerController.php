@@ -20,12 +20,12 @@ class SimpleCaptchaHandlerController extends AppController
         SimpleLibraryLoader::load();
 
         // validate captcha style name and load SimpleCaptchaComponent
-        $captchaStyleName = $this->request->query('c');
+        $captchaStyleName = $this->request->getQuery('c');
         if (is_null($captchaStyleName) || !preg_match('/^(\w+)$/ui', $captchaStyleName)) {
             return;
         }
 
-        $captchaId = $this->request->query('t');
+        $captchaId = $this->request->getQuery('t');
         if ($captchaId !== null) {
             $captchaId = \BDC_StringHelper::Normalize($captchaId);
             if (1 !== preg_match(\BDC_SimpleCaptchaBase::VALID_CAPTCHA_ID, $captchaId)) {
@@ -60,7 +60,7 @@ class SimpleCaptchaHandlerController extends AppController
 
         // getting captcha image, sound, validation result
 
-        $commandString = $this->request->query('get');
+        $commandString = $this->request->getQuery('get');
         if (!\BDC_StringHelper::HasValue($commandString)) {
             \BDC_HttpHelper::BadRequest('command');
         }
@@ -577,7 +577,7 @@ class SimpleCaptchaHandlerController extends AppController
      */
     private function getCaptchaId()
     {
-        $captchaId = $this->request->query('t');
+        $captchaId = $this->request->getQuery('t');
         if (!\BDC_StringHelper::HasValue($captchaId) ||
             !\BDC_CaptchaBase::IsValidInstanceId($captchaId)
         ) {
@@ -594,13 +594,13 @@ class SimpleCaptchaHandlerController extends AppController
     private function getUserInput()
     {
         // BotDetect built-in Ajax Captcha validation
-        $input = $this->request->query('i');
+        $input = $this->request->getQuery('i');
 
         if (is_null($input)) {
             // jQuery validation support, the input key may be just about anything,
             // so we have to loop through fields and take the first unrecognized one
             $recognized = array('get', 'c', 't', 'd');
-            foreach ($this->request->query as $key => $value) {
+            foreach ($this->request->getQuery() as $key => $value) {
                 if (!in_array($key, $recognized)) {
                     $input = $value;
                     break;
@@ -627,7 +627,7 @@ class SimpleCaptchaHandlerController extends AppController
      */
     private function isGetResourceContentsRequest()
     {
-        $http_get_data = $this->request->query;
+        $http_get_data = $this->request->getQuery();
         return array_key_exists('get', $http_get_data) && !array_key_exists('c', $http_get_data);
     }
 
