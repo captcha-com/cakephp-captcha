@@ -1,6 +1,6 @@
 {
     "name": "captcha-com/cakephp-captcha",
-    "description": "CakePHP Captcha Plugin -- BotDetect 4 PHP Captcha generator integration for the CakePHP framework.",
+    "description": "CakePHP Captcha Plugin -- BotDetect PHP Captcha generator integration for the CakePHP framework.",
     "type": "cakephp-plugin",
     "keywords": ["cakephp captcha plugin", "cakephp captcha", "captcha plugin", "captcha", "captcha generator", "botdetect"],
     "homepage": "https://captcha.com/doc/php/cakephp-captcha-quickstart.html",
