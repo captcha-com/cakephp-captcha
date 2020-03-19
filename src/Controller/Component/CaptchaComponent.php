@@ -36,7 +36,7 @@ class CaptchaComponent extends Component
     {
         self::$instance =& $this;
 
-        $session = $this->request->session();
+        $session = $this->request->getSession();
 
         // load botdetect captcha library
         LibraryLoader::load($session);
