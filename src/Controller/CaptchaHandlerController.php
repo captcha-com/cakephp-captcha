@@ -17,20 +17,20 @@ class CaptchaHandlerController extends AppController
     {
         if ($this->isGetResourceContentsRequest()) {
             // validate filename
-            $filename = $this->request->query('get');
+            $filename = $this->request->getQuery('get');
             if (!preg_match('/^[a-z-]+\.(css|gif|js)$/', $filename)) {
                 $this->badRequest('Invalid file name.');
             }
         } else {
             // validate captcha id and load CaptchaComponent
-            $captchaId = $this->request->query('c');
+            $captchaId = $this->request->getQuery('c');
             if (is_null($captchaId) || !preg_match('/^(\w+)$/ui', $captchaId)) {
                 $this->badRequest('Invalid captcha id.');
             }
 
-            $captchaInstanceId = $this->request->query('t');
+            $captchaInstanceId = $this->request->getQuery('t');
             if (is_null($captchaInstanceId) || !(32 == strlen($captchaInstanceId) &&
-                    (1 === preg_match("/^([a-f0-9]+)$/u", $captchaInstanceId)))) {
+                (1 === preg_match("/^([a-f0-9]+)$/u", $captchaInstanceId)))) {
                 $this->badRequest('Invalid instance id.');
             }
 
@@ -38,7 +38,6 @@ class CaptchaHandlerController extends AppController
                 'captchaConfig' => $captchaId,
                 'captchaInstanceId' => $captchaInstanceId
             ]);
-
         }
     }
 
@@ -70,7 +69,7 @@ class CaptchaHandlerController extends AppController
                 \BDC_HttpHelper::BadRequest('captcha');
             }
 
-            $commandString = $this->request->query('get');
+            $commandString = $this->request->getQuery('get');
             if (!\BDC_StringHelper::HasValue($commandString)) {
                 \BDC_HttpHelper::BadRequest('command');
             }
@@ -100,7 +99,8 @@ class CaptchaHandlerController extends AppController
 
             // disallow audio file search engine indexing
             header('X-Robots-Tag: noindex, nofollow, noarchive, nosnippet');
-            echo $responseBody; exit;
+            echo $responseBody;
+            exit;
         }
     }
 
@@ -111,7 +111,7 @@ class CaptchaHandlerController extends AppController
      */
     public function getResourceContents()
     {
-        $filename = $this->request->query('get');
+        $filename = $this->request->getQuery('get');
 
         $resourcePath = realpath(Path::getPublicDirPathInLibrary() . $filename);
 
@@ -128,7 +128,8 @@ class CaptchaHandlerController extends AppController
 
         header("Content-Type: {$mimeType}");
         header("Content-Length: {$fileLength}");
-        echo (file_get_contents($resourcePath)); exit;
+        echo (file_get_contents($resourcePath));
+        exit;
     }
 
     /**
@@ -247,7 +248,8 @@ class CaptchaHandlerController extends AppController
     }
 
 
-    public function getSoundData($p_Captcha, $p_InstanceId) {
+    public function getSoundData($p_Captcha, $p_InstanceId)
+    {
         $shouldCache = (
             ($p_Captcha->SoundRegenerationMode == \SoundRegenerationMode::None) || // no sound regeneration allowed, so we must cache the first and only generated sound
             $this->detectIosRangeRequest() // keep the same Captcha sound across all chunked iOS requests
@@ -269,42 +271,51 @@ class CaptchaHandlerController extends AppController
         return $soundBytes;
     }
 
-    private function generateSoundData($p_Captcha, $p_InstanceId) {
+    private function generateSoundData($p_Captcha, $p_InstanceId)
+    {
         $rawSound = $p_Captcha->CaptchaBase->GetSound($p_InstanceId);
         $p_Captcha->CaptchaBase->SaveCodeCollection(); // always record sound generation count
         return $rawSound;
     }
 
-    private function saveSoundData($p_InstanceId, $p_SoundBytes) {
+    private function saveSoundData($p_InstanceId, $p_SoundBytes)
+    {
         CAKE_Session_Save("BDC_Cached_SoundData_" . $p_InstanceId, $p_SoundBytes);
     }
 
-    private function loadSoundData($p_InstanceId) {
+    private function loadSoundData($p_InstanceId)
+    {
         return CAKE_Session_Load("BDC_Cached_SoundData_" . $p_InstanceId);
     }
 
-    private function clearSoundData($p_InstanceId) {
+    private function clearSoundData($p_InstanceId)
+    {
         CAKE_Session_Clear("BDC_Cached_SoundData_" . $p_InstanceId);
     }
 
 
     // Instead of relying on unreliable user agent checks, we detect the iOS sound
     // requests by the Http headers they will always contain
-    private function detectIosRangeRequest() {
+    private function detectIosRangeRequest()
+    {
 
-        if(array_key_exists('HTTP_RANGE', $_SERVER) &&
-            \BDC_StringHelper::HasValue($_SERVER['HTTP_RANGE'])) {
+        if (
+            array_key_exists('HTTP_RANGE', $_SERVER) &&
+            \BDC_StringHelper::HasValue($_SERVER['HTTP_RANGE'])
+        ) {
 
             // Safari on MacOS and all browsers on <= iOS 10.x
-            if(array_key_exists('HTTP_X_PLAYBACK_SESSION_ID', $_SERVER) &&
-                \BDC_StringHelper::HasValue($_SERVER['HTTP_X_PLAYBACK_SESSION_ID'])) {
+            if (
+                array_key_exists('HTTP_X_PLAYBACK_SESSION_ID', $_SERVER) &&
+                \BDC_StringHelper::HasValue($_SERVER['HTTP_X_PLAYBACK_SESSION_ID'])
+            ) {
                 return true;
             }
 
             $userAgent = array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : null;
 
             // all browsers on iOS 11.x and later
-            if(\BDC_StringHelper::HasValue($userAgent)) {
+            if (\BDC_StringHelper::HasValue($userAgent)) {
                 $userAgentLC = \BDC_StringHelper::Lowercase($userAgent);
                 if (\BDC_StringHelper::Contains($userAgentLC, "like mac os") || \BDC_StringHelper::Contains($userAgentLC, "like macos")) {
                     return true;
@@ -314,7 +325,8 @@ class CaptchaHandlerController extends AppController
         return false;
     }
 
-    private function getSoundByteRange() {
+    private function getSoundByteRange()
+    {
         // chunked requests must include the desired byte range
         $rangeStr = $_SERVER['HTTP_RANGE'];
         if (!\BDC_StringHelper::HasValue($rangeStr)) {
@@ -329,12 +341,15 @@ class CaptchaHandlerController extends AppController
         );
     }
 
-    private function detectFakeRangeRequest() {
+    private function detectFakeRangeRequest()
+    {
         $detected = false;
         if (array_key_exists('HTTP_RANGE', $_SERVER)) {
             $rangeStr = $_SERVER['HTTP_RANGE'];
-            if (\BDC_StringHelper::HasValue($rangeStr) &&
-                preg_match('/bytes=0-$/', $rangeStr)) {
+            if (
+                \BDC_StringHelper::HasValue($rangeStr) &&
+                preg_match('/bytes=0-$/', $rangeStr)
+            ) {
                 $detected = true;
             }
         }
@@ -375,7 +390,8 @@ class CaptchaHandlerController extends AppController
         return $resultJson;
     }
 
-    public function getScriptInclude() {
+    public function getScriptInclude()
+    {
         // saved data for the specified Captcha object in the application
         if (is_null($this->Captcha)) {
             \BDC_HttpHelper::BadRequest('captcha');
@@ -417,8 +433,9 @@ class CaptchaHandlerController extends AppController
      */
     private function getInstanceId()
     {
-        $instanceId = $this->request->query('t');
-        if (!\BDC_StringHelper::HasValue($instanceId) ||
+        $instanceId = $this->request->getQuery('t');
+        if (
+            !\BDC_StringHelper::HasValue($instanceId) ||
             !\BDC_CaptchaBase::IsValidInstanceId($instanceId)
         ) {
             return;
@@ -434,13 +451,13 @@ class CaptchaHandlerController extends AppController
     private function getUserInput()
     {
         // BotDetect built-in Ajax Captcha validation
-        $input = $this->request->query('i');
+        $input = $this->request->getQuery('i');
 
         if (is_null($input)) {
             // jQuery validation support, the input key may be just about anything,
             // so we have to loop through fields and take the first unrecognized one
             $recognized = array('get', 'c', 't', 'd');
-            foreach ($this->request->query as $key => $value) {
+            foreach ($this->request->getQuery as $key => $value) {
                 if (!in_array($key, $recognized)) {
                     $input = $value;
                     break;
@@ -458,7 +475,7 @@ class CaptchaHandlerController extends AppController
      */
     private function getJsonValidationResult($result)
     {
-        $resultStr = ($result ? 'true': 'false');
+        $resultStr = ($result ? 'true' : 'false');
         return $resultStr;
     }
 
@@ -467,7 +484,7 @@ class CaptchaHandlerController extends AppController
      */
     private function isGetResourceContentsRequest()
     {
-        $http_get_data = $this->request->query;
+        $http_get_data = $this->request->getQuery;
         return array_key_exists('get', $http_get_data) && !array_key_exists('c', $http_get_data);
     }
 
@@ -479,14 +496,17 @@ class CaptchaHandlerController extends AppController
      */
     private function badRequest($message)
     {
-        while (ob_get_contents()) { ob_end_clean(); }
+        while (ob_get_contents()) {
+            ob_end_clean();
+        }
         header('HTTP/1.1 400 Bad Request');
         header('Content-Type: text/plain');
         echo $message;
         exit;
     }
 
-    public function getP() {
+    public function getP()
+    {
         if (is_null($this->Captcha)) {
             \BDC_HttpHelper::BadRequest('captcha');
         }
@@ -503,7 +523,7 @@ class CaptchaHandlerController extends AppController
 
         // response data
         $response = "{\"sp\":\"{$p->GetSP()}\",\"hs\":\"{$p->GetHs()}\"}";
- 
+
 
         // response MIME type & headers
         header('Content-Type: application/json');
