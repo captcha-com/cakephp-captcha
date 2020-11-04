@@ -457,7 +457,7 @@ class CaptchaHandlerController extends AppController
             // jQuery validation support, the input key may be just about anything,
             // so we have to loop through fields and take the first unrecognized one
             $recognized = array('get', 'c', 't', 'd');
-            foreach ($this->request->getQuery as $key => $value) {
+            foreach ($this->request->getQuery() as $key => $value) {
                 if (!in_array($key, $recognized)) {
                     $input = $value;
                     break;
@@ -484,7 +484,7 @@ class CaptchaHandlerController extends AppController
      */
     private function isGetResourceContentsRequest()
     {
-        $http_get_data = $this->request->getQuery;
+        $http_get_data = $this->request->getQuery();
         return array_key_exists('get', $http_get_data) && !array_key_exists('c', $http_get_data);
     }
 
