@@ -14,7 +14,7 @@ class CaptchaComponent extends Component
      * @var object
      */
     private $captcha;
-    
+
     /**
      * BotDetect CakePHP CAPTCHA plugin information.
      *
@@ -34,9 +34,9 @@ class CaptchaComponent extends Component
      */
     public function initialize(array $params)
     {
-        self::$instance =& $this;
+        self::$instance = &$this;
 
-        $session = $this->request->session();
+        $session = $this->request->getSession();
 
         // load botdetect captcha library
         LibraryLoader::load($session);
@@ -45,10 +45,7 @@ class CaptchaComponent extends Component
         // this will avoid user being able to pass in a lowercase option (e.g. captchaconfig)
         $params = array_change_key_case($params, CASE_LOWER);
 
-        if (empty($params) ||
-            !array_key_exists('captchaconfig', $params) ||
-            empty($params['captchaconfig'])
-        ) {
+        if (empty($params) || !array_key_exists('captchaconfig', $params) || empty($params['captchaconfig'])) {
             $errorMessage  = 'The BotDetect Captcha component requires you to declare "captchaConfig" option and assigns a captcha configuration key defined in config/captcha.php file.<br>';
             $errorMessage .= 'For example: $this->loadComponent(\'CakeCaptcha.Captcha\', [\'captchaConfig\' => \'ContactCaptcha\']);';
             throw new InvalidArgumentException($errorMessage);
@@ -57,9 +54,8 @@ class CaptchaComponent extends Component
         $captchaId = $params['captchaconfig'];
 
         $captchaInstanceId = null;
-        if(isset($params['captchainstanceid'])) {
+        if (isset($params['captchainstanceid'])) {
             $captchaInstanceId = $params['captchainstanceid'];
-
         }
 
         // get captcha config
@@ -75,7 +71,7 @@ class CaptchaComponent extends Component
 
         // save user's captcha configuration options
         UserCaptchaConfiguration::save($config);
-        
+
         // init botdetect captcha instance
         $this->initCaptcha($config, $captchaInstanceId);
     }
@@ -128,56 +124,56 @@ class CaptchaComponent extends Component
      */
     public function __get($name)
     {
-        if (method_exists($this->captcha->get_CaptchaBase(), ($method = 'get_'.$name))) {
+        if (method_exists($this->captcha->get_CaptchaBase(), ($method = 'get_' . $name))) {
             return $this->captcha->get_CaptchaBase()->$method();
         }
 
-        if (method_exists($this->captcha, ($method = 'get_'.$name))) {
+        if (method_exists($this->captcha, ($method = 'get_' . $name))) {
             return $this->captcha->$method();
         }
 
-        if (method_exists($this, ($method = 'get_'.$name))) {
+        if (method_exists($this, ($method = 'get_' . $name))) {
             return $this->$method();
         }
     }
 
     public function __isset($name)
     {
-        if (method_exists($this->captcha->get_CaptchaBase(), ($method = 'isset_'.$name))) {
+        if (method_exists($this->captcha->get_CaptchaBase(), ($method = 'isset_' . $name))) {
             return $this->captcha->get_CaptchaBase()->$method();
         }
 
-        if (method_exists($this->captcha, ($method = 'isset_'.$name))) {
+        if (method_exists($this->captcha, ($method = 'isset_' . $name))) {
             return $this->captcha->$method();
         }
 
-        if (method_exists($this, ($method = 'isset_'.$name))) {
+        if (method_exists($this, ($method = 'isset_' . $name))) {
             return $this->$method();
         }
     }
 
     public function __set($name, $value)
     {
-        if (method_exists($this->captcha->get_CaptchaBase(), ($method = 'set_'.$name))) {
+        if (method_exists($this->captcha->get_CaptchaBase(), ($method = 'set_' . $name))) {
             return $this->captcha->get_CaptchaBase()->$method($value);
         }
 
-        if (method_exists($this->captcha, ($method = 'set_'.$name))) {
+        if (method_exists($this->captcha, ($method = 'set_' . $name))) {
             $this->captcha->$method($value);
-        } else if (method_exists($this, ($method = 'set_'.$name))) {
+        } else if (method_exists($this, ($method = 'set_' . $name))) {
             $this->$method($value);
         }
     }
 
     public function __unset($name)
     {
-        if (method_exists($this->captcha->get_CaptchaBase(), ($method = 'unset_'.$name))) {
+        if (method_exists($this->captcha->get_CaptchaBase(), ($method = 'unset_' . $name))) {
             return $this->captcha->get_CaptchaBase()->$method();
         }
 
-        if (method_exists($this->captcha, ($method = 'unset_'.$name))) {
+        if (method_exists($this->captcha, ($method = 'unset_' . $name))) {
             $this->captcha->$method();
-        } else if (method_exists($this, ($method = 'unset_'.$name))) {
+        } else if (method_exists($this, ($method = 'unset_' . $name))) {
             $this->$method();
         }
     }
@@ -195,6 +191,6 @@ class CaptchaComponent extends Component
 
 // static field initialization
 CaptchaComponent::$productInfo = [
-    'name' => 'BotDetect 4 PHP Captcha generator integration for the CakePHP framework', 
+    'name' => 'BotDetect 4 PHP Captcha generator integration for the CakePHP framework',
     'version' => '4.2.9'
 ];
